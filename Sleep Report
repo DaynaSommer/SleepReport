@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Created on Thu May  5 10:24:25 2022
+
+@author: dayna
+"""
+
+
+# Sleep Report - Dayna Sommer 
+print()
+print("   .:::Sleep Report by Dayna Sommer:::.   ")
+print()
+
+count = goalMadeCount = bestNightHrs = 0
+
+night = []
+lightHrs = []
+deepHrs = []
+remHrs = []
+awakeHrs = []
+hrsSleep = []
+percntSleep = []
+goalStatus = []
+
+def main():
+    global targetHrs, minPercnt, card, count
+    card = int(input("How many nights of data will be entered?  "))
+    targetHrs = float(input("What is the target values for nightly hours of sleep?  "))
+    minPercnt = float(input("What is the minimum percentage of sleep for a 'good' night (Enter as a decimal)?  "))
+    while (count < card):
+        getDetails()
+        count = count + 1
+    procNight()
+    calcPercntMade()
+    displayNightDetails()
+    displaySummary()
+    
+def procNight():
+    countAndCalc()
+    determineGoalStatus()
+    
+def getDetails():
+    global night, lightHrs, deepHrs, remHrs, awakeHrs
+    night.append(input("Enter the night? (Enter as MM/DD/YY)  "))
+    lightHrs.append(float(input("Enter the number of light hours?  ")))
+    deepHrs.append(float(input("Enter the number of deep hours?  ")))
+    remHrs.append(float(input("Enter the number of REM hours?  ")))
+    awakeHrs.append(float(input("Enter the number of awake hours?  ")))
+    
+def countAndCalc():
+    global card, lightHrs, deepHrs, remHrs, awakeHrs, percntSleep, hrsSleep, night
+    for i in range (len(night)):
+        hrsSleep.append(lightHrs[i] + deepHrs[i] + remHrs [i])
+        percntSleep.append(hrsSleep[i] / (hrsSleep[i] + awakeHrs[i]))
+    
+def determineGoalStatus():
+    global hrsSleep, percntSleep, targetHrs, minPercnt, goalMadeCount, goalStatus, night
+    for i in range (len(night)):
+        if (hrsSleep[i] >= targetHrs) and (percntSleep[i] >= minPercnt):
+            goalStatus.append ("Both goals achieved!")
+            goalMadeCount = goalMadeCount + 1
+            updateBestNight()
+        elif (hrsSleep[i] >= targetHrs) and (percntSleep[i] < minPercnt):
+            goalStatus.append ("Hours achieved but percentage too low.")
+        elif (hrsSleep[i] < targetHrs) and (percntSleep[i] >= minPercnt):
+            goalStatus.append ("Percentage achieved but hours too low.")
+        else:
+            goalStatus.append ("Neither hour nor percentage targets achieved.")
+
+def updateBestNight():
+    global night, bestNightHrs, bestNight, bestNightPercnt, hrsSleep, minPercnt, percntSleep, targetHrs
+    for i in range (len(night)):
+        if (hrsSleep[i] >= targetHrs) and (percntSleep[i] >= minPercnt) and (hrsSleep[i] > bestNightHrs):
+            bestNightHrs = hrsSleep[i]
+            bestNight = night[i]
+            bestNightPercnt = percntSleep[i]
+        
+def calcPercntMade():
+    global percntNightsMade
+    percntNightsMade = round((goalMadeCount / count) * 100)
+    
+def displayNightDetails():
+    global night, hrsSleep, percntSleep, goalStatus, bestNight
+    index = night.index(bestNight)
+    print()
+    print("\n   .:::Data Entry Complete:::.   \n")
+    print(" ------ Results for nights entered ------")
+    print()
+
+    print("'Best Night' \tNight \t Sleep Hrs\t % Asleep\t Goal Status")
+    print("-" *80)
+    
+    for i in range (card):
+        if hrsSleep[i] == hrsSleep[index] and percntSleep[i] == percntSleep[index]:
+          bestNightIndicator = "*"
+        else:
+            bestNightIndicator = " "
+        print("    ", bestNightIndicator, end='')
+        print("        ", night[i], end='')
+        print("     %.1f" %(hrsSleep[i]), end='')
+        print("         %.1f%%" %(percntSleep[i] * 100), end='')
+        print("       ", goalStatus[i] , end='')
+        print()
+    print("-" *80)
+    print()
+    
+    
+def displaySummary():
+    global percntNightsMade, bestNight, bestNightHrs, bestNightPercnt
+    index = night.index(bestNight)
+    print("   .:::Summary Report:::.   ")
+    print("\n Percentage of nights both goals were achieved \n")
+    print("\t\t ------ %.1f%% ------ " %(percntNightsMade))
+    print("\n'Best Night(s)' are shown below")
+    print("-" * 50)
+    print("The best date \t Hours of Sleep \t % Asleep \t")
+    print("-" * 50)
+    for i in range (card):
+       if hrsSleep[i] == hrsSleep[index] and percntSleep[i] == percntSleep[index]:
+           print("%-15s %10.1f %14.1f%%" %(night[i], hrsSleep[i], percntSleep[i] * 100))
+
+
+        
+
+
+main()
+
+
