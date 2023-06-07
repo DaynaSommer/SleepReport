@@ -4,7 +4,7 @@
 """
 Created on Thu May  5 10:24:25 2022
 
-@author: dayna
+@author: Dayna Sommer
 """
 
 
@@ -120,8 +120,6 @@ def displaySummary():
     for i in range (card):
        if hrsSleep[i] == hrsSleep[index] and percntSleep[i] == percntSleep[index]:
            print("%-15s %10.1f %14.1f%%" %(night[i], hrsSleep[i], percntSleep[i] * 100))
-
-
         
 
 
